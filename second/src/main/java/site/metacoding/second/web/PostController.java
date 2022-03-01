@@ -1,63 +1,52 @@
 package site.metacoding.second.web;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.ArrayList;
+import java.util.List;
 
-@RestController
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import site.metacoding.second.domain.Post;
+
+// View (글쓰기 페이지, 글 목록 페이지, 글 상세보기 페이지)
+@Controller
 public class PostController {
 
-    // selcet * from post where id =?
-    // 구체적으로 뭘 달라고 요청해야한다. - body x
-    @GetMapping("/post/{id}") // 테이블 명 / 프라이머리키 , 중괄호를 쓰면 PathVariable , id는 프라이머리키 세계약속
-    public String post1(@PathVariable int id) {
-        return "<h1>주세요 id :  </h1>" + id;
+    @GetMapping("/post/writeForm")
+    public String writeForm() {
+        return "post/writeForm";
     }
 
-    // selcet * from post where title =?
-    // 구체적으로 뭘 달라고 요청해야한다. - body x
-    // http://localhost:9000/post?title=?
-    /// http헤더에 닮겨서 간다
-    @GetMapping("/post") // 프라이머리키가 아닌건 쿼리스트링을 쓰지만 프레임워크에서는 쿼리스트링을 쓰지 않아도 된다.
-    public String search(String title) {
-        return "주세요 title : " + title;
+    @GetMapping("/post/list")
+    public String list(Model model) {
+        Post post1 = new Post(1, "제목1", "내용1");
+        Post post2 = new Post(2, "제목2", "내용2");
+        Post post3 = new Post(3, "제목3", "내용3");
+        Post post4 = new Post(4, "제목4", "내용4");
+        List<Post> posts = new ArrayList<>();
+        posts.add(post1);
+        posts.add(post2);
+        posts.add(post3);
+        posts.add(post4);
+
+        model.addAttribute("posts", posts);
+        return "post/list";
     }
 
-    // http://localhost:8000/post
-    // body : title=제목1&content=내용1
-    // header : Content-Type : application/x-www-form-urlencoded
-    // 멀 줘야 함 - body O
-    // request.getParameter() 메서드가 스프링 기본 파싱 전략
-    @PostMapping("/post")
-    public String test2(String title, String content) {
-        return "줄께요 : title : " + title + ", content : " + content;
+    @GetMapping("/post/detail")
+    public String detail(Model model) { // spring에서는 모델에 담아서 넘겨야한다
+
+        // 1. db에 연결해서 select 해야함
+        // 2. resultset을 javaobject로 변경
+        Post post = new Post(1, "제목1", "내용1");
+
+        // 3. request에 담기
+        model.addAttribute("post", post);
+
+        return "post/detail"; // requestdispatcher로 forward함 = request가 복제됨
     }
 
-    // update post set title = ?,content =? where id = ?
-    // title, content (primary key : id 같이 보내야한다)
-    // 뭘 줘야 수정해준다 - body o
-    // API 문서
-    @PutMapping("/post/{id}") // where에 들어가는거는 주소에 적어야한다.
-    public String post3(String title, String content, @PathVariable int id) { // 내용은 여기
-        return "수정해주세요 : title " + title + ", content :" + content + " , id :" + id;
-    }
-
-    // http://localhost:8000/post?title=제목1
-    // delete from post where title =?
-
-    // http://localhost:8000/post/1
-    // delete from post where id =?
-    // 구체적으로 삭제해줄 것을 요청 - body x
-    @DeleteMapping("/post/{id}")
-    public String post4(@PathVariable int id) {
-        return "삭제해주세요 id :" + id;
-    }
-
-    @DeleteMapping("/post")
-    public String post44(String title) {
-        return "삭제해주세요 title :" + title;
-    }
 }
