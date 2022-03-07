@@ -31,24 +31,24 @@ public class PostController {
     }
 
     // GET 글수정 페이지 /post/{id}/updateForm
-    @GetMapping("/post/{id}/updateFrom")
-    public String updateFrom(@PathVariable Integer id) {
-        return "post/updateFrom";
+    @GetMapping("/post/{id}/updateForm")
+    public String updateForm(@PathVariable Integer id) {
+        return "post/updateForm"; // ViewResolver 도움 받음.
     }
 
-    // DELETE 글삭제 /post/{id}
+    // DELETE 글삭제 /post/{id} - 글목록으로 가기
     @DeleteMapping("/post/{id}")
     public String delete(@PathVariable Integer id) {
         return "redirect:/";
     }
 
-    // UPDATE 글수정 /post/{id}
+    // UPDATE 글수정 /post/{id} - 글상세보기 페이지가기
     @PutMapping("/post/{id}")
     public String update(@PathVariable Integer id) {
         return "redirect:/post/" + id;
     }
 
-    // POST 글쓰기 /post
+    // POST 글쓰기 /post - 글목록으로 가기
     @PostMapping("/post")
     public String write() {
         return "redirect:/";
